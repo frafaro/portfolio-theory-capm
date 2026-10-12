@@ -30,19 +30,19 @@ A clean DataFrame `df` is then built where **each column is one stock** and each
 
 Given a vector of portfolio weights, this function computes the three key performance metrics of the portfolio. Everything is **annualized assuming 252 trading days per year**.
 
-**Mean (annualized) portfolio return** — the weighted average of the assets' mean daily returns, scaled to one year:
+**Mean (annualized) portfolio return** , the weighted average of the assets' mean daily returns, scaled to one year:
 
 $$R_p = \left( \sum_{i=1}^{N} w_i \, \bar{r}_i \right) \times 252$$
 
 where $w_i$ is the weight of asset $i$ and $\bar{r}_i$ its mean daily return. In code: `np.sum(mean_returns * weights) * 252`.
 
-**Portfolio volatility (annualized standard deviation)** — obtained from the covariance matrix $\Sigma$ of daily returns through the quadratic form:
+**Portfolio volatility (annualized standard deviation)** , obtained from the covariance matrix $\Sigma$ of daily returns through the quadratic form:
 
 $$\sigma_p = \sqrt{\mathbf{w}^{T} \, \Sigma \, \mathbf{w}} \times \sqrt{252}$$
 
 In code: `np.sqrt(np.dot(weights.T, np.dot(cov, weights))) * np.sqrt(252)`, where `np.dot` performs the matrix multiplication. This is the step that captures **diversification**: the off-diagonal covariances make portfolio risk lower than the weighted average of individual risks.
 
-**Sharpe ratio** — excess return per unit of risk, with $r_f$ the risk-free rate:
+**Sharpe ratio** , excess return per unit of risk, with $r_f$ the risk-free rate:
 
 $$SR = \frac{R_p - r_f}{\sigma_p}$$
 
@@ -50,7 +50,7 @@ The function returns the tuple `(portfolio_return, portfolio_std, sharpe_ratio)`
 
 ### 2.2 `simulate_random_portfolios(num_portfolios, mean_returns, cov, rf)`
 
-This function generates *n* portfolios with **random weights** to explore all possible combinations of the assets — a Monte Carlo approximation of the feasible set (and therefore of the efficient frontier, its upper-left edge).
+This function generates n portfolios with random weights to explore different asset combinations through a Monte Carlo approximation of the feasible set and, consequently, of the efficient frontier (its upper-left boundary).
 
 How the randomness works, for each simulated portfolio:
 
@@ -105,7 +105,7 @@ $$R = r_f + \underbrace{\frac{R_{tan} - r_f}{\sigma_{tan}}}_{\text{slope}} \cdot
 
 where $(\sigma_{tan}, R_{tan})$ are the volatility and return of the tangency portfolio. Note that the slope of the CML **is exactly the Sharpe ratio of the tangency portfolio**.
 
-How it is computed in the notebook — simple linear algebra / analytic geometry. The slope of a line through two known points $P_1(x_1, y_1)$ and $P_2(x_2, y_2)$ is $\frac{y_2 - y_1}{x_2 - x_1}$. Here the two points are:
+The slope of a line through two known points $P_1(x_1, y_1)$ and $P_2(x_2, y_2)$ is $\frac{y_2 - y_1}{x_2 - x_1}$. Here the two points are:
 
 - $P_1 = (0,\ r_f)$ — the risk-free asset: zero volatility, certain return $r_f = 0.035$;
 - $P_2 = (\sigma_{tan},\ R_{tan})$ — the Maximum Sharpe portfolio found in the simulation.
@@ -134,7 +134,7 @@ max_sharpe_port.to_frame().T   # Maximum Sharpe Ratio portfolio
 min_vol_port.to_frame().T      # Minimum Volatility portfolio
 ```
 
-Each resulting DataFrame has one row and the columns `Return`, `Standard_Deviation`, `Sharpe` plus one column per ticker with the **optimal weights** — i.e. the exact composition of the two outlined portfolios. The full simulation table can be inspected with `print(results_frame)`.
+Each resulting DataFrame has one row and the columns `Return`, `Standard_Deviation`, `Sharpe` plus one column per ticker with the **optimal weights**  i.e. the exact composition of the two outlined portfolios. The full simulation table can be inspected with `print(results_frame)`.
 
 ---
 
@@ -144,6 +144,6 @@ Each resulting DataFrame has one row and the columns `Return`, `Standard_Deviati
 pandas, numpy, matplotlib, yfinance
 ```
 
-Recommended environment: conda `arima` (see the `interactive-brokers-api` repo, file `arima.yml`). To run the notebook just **select the `arima` kernel** in your editor — no `conda activate` needed in the terminal.
+Recommended environment: conda `arima` (see the `interactive-brokers-api` repo, file `arima.yml`). To run the notebook just **select the `arima` kernel** in your editor ( no `conda activate` needed in the terminal).
 
 > Note: the notebook downloads data from Yahoo Finance, so an Internet connection is required (but **no** TWS/Interactive Brokers). The yfinance API changes often: if the download fails, update the library with `pip install -U yfinance`.
